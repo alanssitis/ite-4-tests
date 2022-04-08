@@ -18,7 +18,7 @@ Suggestions to the structure:
             'docker-reference': [DOCKERFILE-HASH?/MANIFEST]
         },
         'image': {
-            'Docker-id': [DOCKER-ID]
+            'docker-attrs': [CONTAINER IMAGE ATTRIBUTE]
         },
         'type': [BUILDER USED]
     },
@@ -98,10 +98,9 @@ def hash_artifacts(client, image, dockerfile, hash_algorithms=None):
                         algorithm: securesystemslib.hash.digest_filename(
                             dockerfile, algorithm).hexdigest()
                     },
-                    'docker-attrs': _hash_co_attrs(image.attrs, algorithm),
                 },
                 'image': {
-                    'Docker-id': image.id,
+                    'docker-attrs': _hash_co_attrs(image.attrs, algorithm),
                 },
                 'type': client.version(),
             },
