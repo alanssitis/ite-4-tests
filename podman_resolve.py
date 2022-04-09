@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 
-import docker
+import podman
 
 
-class DockerEngine:
+class PodmanEngine:
 
     def __init__(self):
         try:
-            self.client = docker.from_env()
+            self.client = podman.PodmanClient()
         except Exception as exception:
             raise exception
 
