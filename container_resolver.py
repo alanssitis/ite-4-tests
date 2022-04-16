@@ -27,7 +27,6 @@ from podman_resolve import PodmanEngine
 import securesystemslib.formats
 import securesystemslib.hash
 
-
 CONTAINER_ENGINES = {
     "docker": DockerEngine,
     "podman": PodmanEngine,
@@ -95,8 +94,8 @@ def digest_image(image_name, builder, hash_algorithms):
             'builder': engine.client.version(),
         }
 
-        digest_object.update(json.dumps(
-            representation, sort_keys=True).encode())
+        digest_object.update(
+            json.dumps(representation, sort_keys=True).encode())
         hash_dict.update({algorithm: digest_object.hexdigest()})
 
     return hash_dict
