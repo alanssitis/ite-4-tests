@@ -31,6 +31,4 @@ jobs:
       - 
         name: Print stuff
         run: |
-          echo ${{ steps.build-and-push.outputs.imageid }}
-          echo ${{ steps.build-and-push.outputs.digest }}
-          echo ${{ steps.build-and-push.outputs.metadata }}
+          echo '${{ steps.build-and-push.outputs.metadata }}'
