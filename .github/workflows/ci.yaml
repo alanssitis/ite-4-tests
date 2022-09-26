@@ -27,7 +27,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           push: true
-          tags: ite-4-test/basic:latest
+          tags: alanssitis/test:latest
       - 
         name: Print stuff
         run: |
