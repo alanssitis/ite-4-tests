@@ -3,7 +3,7 @@ name: ci
 on:
   push:
     branches:
-      - 'main'
+      - 'development'
 
 jobs:
   docker:
@@ -23,7 +23,12 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       -
         name: Build and push
+        id: build-and-push
         uses: docker/build-push-action@v3
         with:
           push: true
           tags: ite-4-test/basic:latest
+      - 
+        name: Print stuff
+        run: |
+          echo ${{ steps.build-and-push.outputs }}
