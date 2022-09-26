@@ -28,7 +28,12 @@ jobs:
         with:
           push: true
           tags: alanssitis/test:latest
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
       - 
         name: Print stuff
         run: |
           echo '${{ steps.build-and-push.outputs.metadata }}'
+          python3 resolve_gh_action.py '${{ steps.build-and-push.outputs.metadata }}'
