@@ -1,4 +1,4 @@
-name: ci
+name: docker-ci
 
 on:
   push:
@@ -6,9 +6,13 @@ on:
       - 'development'
 
 jobs:
+  
   docker:
     runs-on: ubuntu-latest
     steps:
+      - 
+        name: Checkout repo
+        uses: actions/checkout@v3
       -
         name: Set up QEMU
         uses: docker/setup-qemu-action@v2
@@ -26,14 +30,45 @@ jobs:
         id: build-and-push
         uses: docker/build-push-action@v3
         with:
+          context: .
           push: true
           tags: alanssitis/test:latest
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
+      - 
+        name: Setup python 3.10
+        uses: actions/setup-python@v4
         with:
           python-version: '3.10'
       - 
         name: Print stuff
         run: |
-          echo '${{ steps.build-and-push.outputs.metadata }}'
-          python3 resolve_gh_action.py '${{ steps.build-and-push.outputs.metadata }}'
+          python3 resolve_gh_action.py '${{ steps.build-and-push.outputs.imageid }}' '${{ steps.build-and-push.outputs.digest }}'
+
+  buildah:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout repo
+        uses: actions/checkout@v3
+      - 
+        name: Build Image
+        uses: redhat-actions/buildah-build@v2
+        id: build-image
+        with:
+          image: test
+          tags: latest
+          containerfiles: |
+            ./Dockerfile
+      -
+        name: Push Image
+        id: push-image
+        uses: redhat-actions/push-to-registry@v2
+        with:
+          image: ${{ steps.build-image.outputs.image }}
+          tags: ${{ steps.build-image.outputs.tags }}
+          registry: docker.io/alanssitis
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      -
+        name: Print stuff
+        run: |
+          python3 resolve_gh_action.py '${{ steps.push-image.outputs.registry-path }}' '${{ steps.push-image.outputs.digest }}'
