@@ -37,6 +37,7 @@ jobs:
         name: Print stuff
         run: |
           python3 resolve_gh_action.py 'docker' '${{ steps.build-and-push.outputs.digest }}'
+          echo '${{ github.object }}'
 
   buildah:
     runs-on: ubuntu-latest
@@ -67,4 +68,4 @@ jobs:
         name: Print stuff
         run: |
           python3 resolve_gh_action.py 'buildah' '${{ steps.push-image.outputs.digest }}'
-          echo '${{ github }}'
+          echo '${{ github.object }}'
