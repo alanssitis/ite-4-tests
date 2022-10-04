@@ -5,6 +5,9 @@ on:
     branches:
       - 'development'
 
+env:
+  IMAGE_NAME: docker.io/alanssitis/test
+
 jobs:
   
   docker:
@@ -32,7 +35,8 @@ jobs:
         with:
           context: .
           push: true
-          tags: alanssitis/test:docker
+          image: $${{ env.IMAGE_NAME }}
+          tags: docker
       - 
         name: Print stuff
         run: |
@@ -50,7 +54,7 @@ jobs:
         uses: redhat-actions/buildah-build@v2
         id: build-image
         with:
-          image: test
+          image: ${{ env.IMAGE_NAME }}
           tags: buildah
           containerfiles: |
             ./Dockerfile
