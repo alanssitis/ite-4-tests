@@ -5,8 +5,7 @@ import securesystemslib.formats
 import securesystemslib.hash
 
 
-def digest_container_build_push(builder, last_commit, image_digest,
-                                hash_algorithms):
+def digest_container_build_push(standard, tag, digest, hash_algorithms):
     if not hash_algorithms:
         hash_algorithms = ['sha256']
 
@@ -18,14 +17,9 @@ def digest_container_build_push(builder, last_commit, image_digest,
             algorithm, securesystemslib.hash.DEFAULT_HASH_LIBRARY)
 
         representation = {
-            'builder': builder,
-            'context': {
-                'commit': last_commit,
-            },
-            'image': {
-                'digest': image_digest,
-            },
+            f'{standard}://{tag}': digest,
         }
+        print(representation)
 
         digest_object.update(
             json.dumps(representation, sort_keys=True).encode())
@@ -36,9 +30,7 @@ def digest_container_build_push(builder, last_commit, image_digest,
 
 if __name__ == '__main__':
     if len(sys.argv) != 4:
-        sys.exit(
-            f'Error: Usage: {sys.argv[0]} <builder> <git commit> <image digest>'
-        )
+        sys.exit(f'Error: Usage: {sys.argv[0]} <standard> <tag> <digest>')
 
     hash_algorithms = ['sha256', 'sha512', 'md5']
 
