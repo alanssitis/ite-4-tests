@@ -6,7 +6,7 @@ on:
       - 'development'
 
 env:
-  IMAGE_NAME: docker.io/alanssitis/test
+  REGISTRY: docker.io/alanssitis
 
 jobs:
   
@@ -35,8 +35,7 @@ jobs:
         with:
           context: .
           push: true
-          image: $${{ env.IMAGE_NAME }}
-          tags: docker
+          tags: docker.io/alanssitis/test:docker
       - 
         name: Print stuff
         run: |
@@ -55,7 +54,7 @@ jobs:
         uses: redhat-actions/buildah-build@v2
         id: build-image
         with:
-          image: ${{ env.IMAGE_NAME }}
+          image: test
           tags: buildah
           containerfiles: |
             ./Dockerfile
@@ -66,7 +65,7 @@ jobs:
         with:
           image: ${{ steps.build-image.outputs.image }}
           tags: ${{ steps.build-image.outputs.tags }}
-          registry: docker.io/alanssitis
+          registry: ${{ env.REGISTRY }}
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       -
