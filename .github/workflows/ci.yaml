@@ -5,13 +5,13 @@ on:
     branches:
       - 'development'
 
-env:
-  REGISTRY: docker.io/alanssitis
 
 jobs:
   
   docker:
     runs-on: ubuntu-latest
+    env:
+      TAG: docker.io/alanssitis/test:docker
     steps:
       - 
         name: Checkout repo
@@ -35,13 +35,12 @@ jobs:
         with:
           context: .
           push: true
-          tags: docker.io/alanssitis/test:docker
+          tags: ${{ env.TAG }}
       - 
         name: Print stuff
         run: |
           pip install -r requirements.txt
-          echo '${{ steps.build-and-push.outputs.metadata }}'
-          python3 resolve_gh_action.py 'docker' '${{ env.IMAGE_NAME }}' '${{ steps.build-and-push.outputs.digest }}'
+          python3 resolve_gh_action.py 'docker' '${{ env.TAG }}' '${{ steps.build-and-push.outputs.digest }}'
 
   buildah:
     runs-on: ubuntu-latest
@@ -65,12 +64,11 @@ jobs:
         with:
           image: ${{ steps.build-image.outputs.image }}
           tags: ${{ steps.build-image.outputs.tags }}
-          registry: ${{ env.REGISTRY }}
+          registry: docker.io/alanssitis
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       -
         name: Print stuff
         run: |
           pip install -r requirements.txt
-          echo '${{ steps.push-image.outputs.registry-paths }}'
-          python3 resolve_gh_action.py 'buildah' '${{ env.IMAGE_NAME }}' '${{ steps.push-image.outputs.digest }}'
+          python3 resolve_gh_action.py 'buildah' '${{ steps.push-image.outputs.registry-path }}' '${{ steps.push-image.outputs.digest }}'

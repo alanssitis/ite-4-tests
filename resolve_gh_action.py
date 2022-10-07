@@ -12,14 +12,17 @@ def digest_container_build_push(standard, tag, digest, hash_algorithms):
     securesystemslib.formats.HASHALGORITHMS_SCHEMA.check_match(hash_algorithms)
     hash_dict = {}
 
+    digest_alg, digest_val = digest.split(':')
+
     for algorithm in hash_algorithms:
         digest_object = securesystemslib.hash.digest(
             algorithm, securesystemslib.hash.DEFAULT_HASH_LIBRARY)
 
         representation = {
-            f'{standard}://{tag}': digest,
+            f'{standard}://{tag}': {
+                digest_alg: digest_val,
+            },
         }
-        print(representation)
 
         digest_object.update(
             json.dumps(representation, sort_keys=True).encode())
